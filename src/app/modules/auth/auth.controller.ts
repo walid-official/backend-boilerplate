@@ -1,0 +1,45 @@
+import AppError from "../../errorHelpers/AppError"
+import { catchAsync } from "../../utils/catchAsync"
+import { Request, Response, NextFunction } from "express"
+import { createUserTokens } from "../../utils/userTokens"
+import { setAuthCookie } from "../../utils/setCookie"
+import { sendResponse } from "../../utils/sendResponse"
+import httpStatus from "http-status";
+import { User } from "../user/user.model"
+import bcryptjs from "bcryptjs";
+
+export const credentialsLogin = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
+  const { email, password } = req.body;
+
+  // 1. Find user in DB (include password field if it's excluded by default)
+  const userDoc = await User.findOne({ email }).select("+password");
+  if (!userDoc) {
+    throw new AppError(httpStatus.UNAUTHORIZED, "Invalid email or password");
+  }
+
+//   // 2. Verify password (assuming you have a method on User model)
+    const isPasswordMatch = await bcryptjs.compare(password, userDoc?.password as string);
+    if (!isPasswordMatch) {
+    throw new AppError(httpStatus.UNAUTHORIZED, "Invalid email or password");
+    }
+
+//   // 3. Create tokens
+  const userTokens = createUserTokens(userDoc);
+
+//   // 4. Remove password before sending
+  const { password: pass, ...rest } = userDoc.toObject();
+
+//   // 5. Set auth cookies
+  setAuthCookie(res, userTokens);
+
+//   // 6. Send success response
+  sendResponse(res, {
+    success: true,
+    statusCode: httpStatus.OK,
+    message: "User Logged In Successfully",
+    data: {
+      accessToken: userTokens.accessToken,
+      user: rest
+    },
+  });
+});

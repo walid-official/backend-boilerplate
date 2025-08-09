@@ -1,6 +1,7 @@
 import { z } from "zod";
 import { IsActive, Role } from "./user.interface";
 
+
 export const createUserZodSchema = z.object({
     name: z
         .string({ message: "Name must be string" })
@@ -48,6 +49,7 @@ export const createUserZodSchema = z.object({
         .max(200, { message: "Address cannot exceed 200 characters." })
         .optional()
 })
+
 
 
 export const updateUserZodSchema = z.object({
