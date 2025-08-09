@@ -1,10 +1,14 @@
 
 import { Router } from "express";
-import { credentialsLogin, getNewAccessToken } from "./auth.controller";
+import { changePassword, credentialsLogin, getNewAccessToken, logout } from "./auth.controller";
+import { checkAuth } from "../../middlewares/checkAuth";
+import { Role } from "../user/user.interface";
 
 const router = Router()
 
 router.post("/login", credentialsLogin)
-router.post("/refresh-token", getNewAccessToken)
+router.post("/logout", logout)
+router.post("/refresh-token",  getNewAccessToken)
+router.post("/change-password", checkAuth(...Object.values(Role)), changePassword);
 
 export const AuthRoutes = router;
