@@ -7,6 +7,7 @@ import { sendResponse } from "../../utils/sendResponse"
 import httpStatus from "http-status";
 import { User } from "../user/user.model"
 import bcryptjs from "bcryptjs";
+import { getNewAccessTokenService } from "./auth.service"
 
 export const credentialsLogin = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
   const { email, password } = req.body;
@@ -39,7 +40,30 @@ export const credentialsLogin = catchAsync(async (req: Request, res: Response, n
     message: "User Logged In Successfully",
     data: {
       accessToken: userTokens.accessToken,
+      refreshToken: userTokens.refreshToken,
       user: rest
     },
   });
 });
+
+export const getNewAccessToken = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
+    const refreshToken = req.cookies.refreshToken;
+    if (!refreshToken) {
+        throw new AppError(httpStatus.BAD_REQUEST, "No refresh token recieved from cookies")
+    }
+    const tokenInfo = await getNewAccessTokenService(refreshToken as string)
+
+    // res.cookie("accessToken", tokenInfo.accessToken, {
+    //     httpOnly: true,
+    //     secure: false
+    // })
+
+    setAuthCookie(res, tokenInfo);
+
+    sendResponse(res, {
+        success: true,
+        statusCode: httpStatus.OK,
+        message: "New Access Token Retrived Successfully",
+        data: tokenInfo,
+    })
+})
