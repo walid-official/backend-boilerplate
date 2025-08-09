@@ -27,7 +27,7 @@ export const createUserService = async (payload: Partial<IUser>) => {
 }
 
 
-const updateUserService = async (userId: string, payload: Partial<IUser>, decodedToken: JwtPayload) => {
+export const updateUserService = async (userId: string, payload: Partial<IUser>, decodedToken: JwtPayload) => {
 
     if (decodedToken.role === Role.USER || decodedToken.role === Role.GUIDE) {
         if (userId !== decodedToken.userId) {

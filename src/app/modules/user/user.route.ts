@@ -1,10 +1,13 @@
 import { Router } from "express";
-import { createUser } from "./user.controller";
+import {  createUserController, updateUserController } from "./user.controller";
 import { validateRequest } from "../../middlewares/validateRequest";
-import { createUserZodSchema } from "./user.zodSchema";
-const router = Router()
+import { createUserZodSchema, updateUserZodSchema } from "./user.zodSchema";
+import { checkAuth } from "../../middlewares/checkAuth";
+import { Role } from "./user.interface";
 
-router.post("/register", validateRequest(createUserZodSchema), createUser)
+const router = Router()
+router.post("/register", validateRequest(createUserZodSchema), createUserController)
+router.patch("/:id", validateRequest(updateUserZodSchema), checkAuth(...Object.values(Role)), updateUserController)
 
 
 export const UserRoutes = router;
