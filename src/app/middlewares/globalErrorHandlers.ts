@@ -1,11 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import { envVars } from "../config/env";
+import { TErrorSources } from "../interface/error.types";
 
-// Define the TErrorSources type or import it from its module
-type TErrorSources = {
-    path: string;
-    message: string;
-};
 
 
 export const globalErrorHandler = async (err: any, req: Request, res: Response, next: NextFunction) => {
