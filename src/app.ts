@@ -1,6 +1,8 @@
 
 import cors from "cors";
 import express, { Request, Response } from "express";
+import { globalErrorHandler } from './app/middlewares/globalErrorHandlers';
+import routeNotFound from "./app/middlewares/routeNotFound";
 
 
 const app = express()
@@ -13,8 +15,11 @@ app.use(cors())
 
 app.get("/", (req: Request, res: Response) => {
     res.status(200).json({
-        message: "Welcome to Tour Management System Backend"
+        message: "Welcome to Backend Server"
     })
 })
 
-export default app
+app.use(globalErrorHandler);
+app.use(routeNotFound)
+
+export default app;
