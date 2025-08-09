@@ -22,4 +22,4 @@ const loadEnvVariables = (): EnvConfig => {
         BCRYPT_SALT_ROUND: process.env.BCRYPT_SALT_ROUND!
     }
 }
-export const envVars = loadEnvVariables()
+export const envVars = loadEnvVariables();
