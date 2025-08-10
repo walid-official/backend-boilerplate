@@ -7,7 +7,7 @@ import { sendResponse } from "../../utils/sendResponse"
 import httpStatus from "http-status";
 import { User } from "../user/user.model"
 import bcryptjs from "bcryptjs";
-import { changePasswordService, getNewAccessTokenService, resetPasswordService } from "./auth.service"
+import { changePasswordService, forgotPasswordService, getNewAccessTokenService, resetPasswordService } from "./auth.service"
 import { JwtPayload } from "jsonwebtoken"
 import { envVars } from "../../config/env"
 
@@ -117,6 +117,21 @@ export const resetPassword = catchAsync(async (req: Request, res: Response, next
         success: true,
         statusCode: httpStatus.OK,
         message: "Password Changed Successfully",
+        data: null,
+    })
+})
+
+export const forgotPassword = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
+
+
+    const { email } = req.body;
+
+    await forgotPasswordService(email);
+
+    sendResponse(res, {
+        success: true,
+        statusCode: httpStatus.OK,
+        message: "Email Sent Successfully",
         data: null,
     })
 })
