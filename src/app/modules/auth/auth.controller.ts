@@ -123,11 +123,11 @@ export const resetPassword = catchAsync(async (req: Request, res: Response, next
 
 export const googleCallbackController = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
 
-    // let redirectTo = req.query.state ? req.query.state as string : ""
+    let redirectTo = req.query.state ? req.query.state as string : ""
 
-    // if (redirectTo.startsWith("/")) {
-    //     redirectTo = redirectTo.slice(1)
-    // }
+    if (redirectTo.startsWith("/")) {
+        redirectTo = redirectTo.slice(1)
+    }
 
     // /booking => booking , => "/" => ""
     const user = req.user;
@@ -149,5 +149,5 @@ export const googleCallbackController = catchAsync(async (req: Request, res: Res
     //     data: null,
     // })
 
-    res.redirect(`${envVars.FRONTEND_URL}`)
+    res.redirect(`${envVars.FRONTEND_URL}/${redirectTo}`)
 })
